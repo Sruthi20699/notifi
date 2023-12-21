@@ -1,0 +1,283 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Form</title>
+    <style>
+         .center-button {
+            display: flex;
+            justify-content: center;
+        }
+
+        .center-button button {
+            margin: 0 auto;
+        }
+
+        .checkbox-label {
+
+    align-items: center;
+    margin-bottom: 8px;
+}
+.checkbox-label input {
+    margin: 0;
+}
+
+
+
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url({% static 'images/newpage.jpg' %});
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: black; /* Set text color to contrast with the background */
+            margin: 0;
+            padding: 50px;
+            text-align: center;
+            }
+
+        input[type="radio"] {
+        display: inline-block;
+              width: 15px;
+              height: 15px;
+              padding: 3px;
+              background-clip: content-box;
+              border: 2px solid #060c3b;
+              border-radius: 50%;
+              margin-right: 0;
+              }
+
+
+        input[type="checkbox"] {
+            display: inline-block;
+              width: 15px;
+              height: 15px;
+              padding: 3px;
+              background-clip: content-box;
+              border: 2px solid #060c3b;
+              border-radius: 50%;
+              margin-right: 0;
+        }
+
+<!--        .checkbox-label input[type="checkbox"] {-->
+<!--            vertical-align: -2px;-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--}-->
+
+
+
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+
+            margin: 0 auto;
+        }
+
+        div {
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: calc(100% - 16px);
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+
+        }
+
+        #confirmationMessage {
+            margin-top: 20px;
+            display: none;
+            font-size: 16px;
+        }
+        .navbar {
+        background-color: gray; /* Blue color, you can change this to any color you prefer */
+        max-width: 500%;
+        padding: 5px;
+         overflow: hidden;
+  border: 1px solid #ccc;
+    }
+    </style>
+</head>
+
+<body>
+
+
+<!--    <nav class="main_nav navbar navbar-expand-lg navbar-dark bg-dark">-->
+<!--    {% if user.is_authenticated %}-->
+<!--        <a class="navbar-brand" href="{% url 'logout' %}">Logout</a>-->
+<!--    {% endif %}-->
+<!--    <div class="collapse navbar-collapse" id="navbarNav">-->
+<!--        <ul class="navbar-nav ml-auto">-->
+<!--            {% if user.is_authenticated %}-->
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>-->
+<!--                </li>-->
+<!--            {% endif %}-->
+<!--        </ul>-->
+<!--    </div>-->
+<!--</nav>-->
+
+     <button onclick="toggleForm()">Click to Order</button>
+
+    <div id="orderFormContainer" style="display:none;">
+        <form action="{% url 'home' %}" method="post" id="orderForm" onsubmit="return handleFormSubmit()">
+            {% csrf_token %}
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" id="name" required>
+            </div>
+            <div>
+            <label for="dob">DOB:</label>
+            <input type="date" id="dob" required>
+        </div>
+        <div>
+            <label for="age">Age:</label>
+            <input type="number" id="age" required>
+        </div>
+        <div>
+            <label>Gender:</label>
+            <label><input type="radio" name="gender" value="male"> Male</label>
+            <label><input type="radio" name="gender" value="female"> Female</label>
+        </div>
+        <div>
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" pattern="[0-9]{10}" required>
+        </div>
+        <div>
+            <label for="email">Mail ID:</label>
+            <input type="email" id="email" required>
+        </div>
+        <div>
+            <label for="address">Address:</label>
+            <input type="text" id="address" required>
+        </div>
+        <div>
+            <label for="department">Department:</label>
+            <select id="department" onchange="updateCourses()" required>
+                <option value="computer_science">Computer Science</option>
+                <option value="commerce">Commerce</option>
+                <option value="commerce">Science</option>
+                <option value="commerce">Arts</option>
+                <!-- Add more departments as needed -->
+            </select>
+        </div>
+        <div>
+            <label for="course">Courses:</label>
+            <select id="course" required>
+                <option value="mca">Mca</option>
+                <option value="mba">Mba</option>
+                <!-- Courses will be populated dynamically using JavaScript -->
+            </select>
+        </div>
+        <div>
+            <label for="purpose">Purpose:</label>
+            <select id="purpose" required>
+                <option value="enquiry">Enquiry</option>
+                <option value="place_order">Place Order</option>
+                <option value="return">Return</option>
+                <!-- Add more purposes as needed -->
+            </select>
+        </div>
+        <div>
+            <label>Materials Provide:</label>
+            <label class="checkbox-label"><input type="checkbox" name="materials" value="notebook"> Notebook</label>
+            <label class="checkbox-label"><input type="checkbox" name="materials" value="pen"> Pen</label>
+            <label class="checkbox-label"><input type="checkbox" name="materials" value="exam_papers"> Exam Papers</label>
+            <!-- Add more materials as needed -->
+        </div>
+            <div class="center-button">
+            <button type="submit">Submit</button>
+            </div>
+        </form>
+
+        <div id="confirmationMessage" style="display: none;">
+            Order Confirmed. <a href="{% url 'home' %}">Return to Home Page</a>
+        </div>
+    </div>
+
+    <script>
+         function handleFormSubmit() {
+            // Validate form fields (You can add validation logic here)
+            // If validation fails, show error messages and return false
+
+            // If validation passes, show confirmation message and return false
+            document.getElementById('confirmationMessage').style.display = 'block';
+            var form = document.getElementById('orderForm');
+            form.reset();
+
+            // Reset the dynamically populated select fields
+            document.getElementById('department').selectedIndex = 0;
+            document.getElementById('course').innerHTML = ''; // Clear course options
+            document.getElementById('purpose').selectedIndex = 0;
+
+            return false;
+        }
+
+        function toggleForm() {
+            var formContainer = document.getElementById('orderFormContainer');
+            formContainer.style.display = 'block';
+        }
+
+        function updateCourses() {
+            const department = document.getElementById('department').value;
+            const courseSelect = document.getElementById('course');
+
+            // Clear existing options
+            courseSelect.innerHTML = '';
+
+            // Add courses based on selected department
+            if (department === 'computer_science') {
+                addCourseOption('CS101', 'Introduction to Computer Science');
+                addCourseOption('CS201', 'Data Structures');
+                // Add more computer science courses as needed
+            } else if (department === 'commerce') {
+                addCourseOption('COM101', 'Introduction to Commerce');
+                addCourseOption('COM202', 'Accounting Principles');
+                // Add more commerce courses as needed
+            }
+            // Add more departments and their corresponding courses as needed
+        }
+
+        function addCourseOption(value, text) {
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = text;
+            document.getElementById('course').appendChild(option);
+        }
+
+        // Rest of your JavaScript code here...
+    </script>
+</body>
+</html>
